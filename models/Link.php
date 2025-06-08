@@ -9,6 +9,7 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\db\Exception;
 use yii\helpers\StringHelper;
+use app\components\validators\UrlAvailabilityValidator;
 
 class Link extends ActiveRecord
 {
@@ -38,32 +39,8 @@ class Link extends ActiveRecord
             ['clicks_count', 'default', 'value'=> 0],
             [['full_body', 'short_body'], 'unique'],
             [['full_body'], 'url', 'validSchemes' => ['http', 'https']],
-            ['full_body', 'validateUrlAvailability'],
+            ['full_body', UrlAvailabilityValidator::class],
         ];
-    }
-
-    public function validateUrlAvailability($attribute, $params): void
-    {
-        if (!$this->hasErrors()) {
-            if (!$this->checkUrlAvailability($this->full_body)) {
-                $this->addError($attribute, 'Данный URL не доступен');
-            }
-        }
-    }
-
-    protected function checkUrlAvailability(string $url): bool
-    {
-        $ch = curl_init($url);
-        curl_setopt($ch, CURLOPT_NOBODY, true);
-        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-        curl_setopt($ch, CURLOPT_USERAGENT, 'Yii2 Link Service');
-
-        $result = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        return $result !== false && $httpCode < 400;
     }
 
     public function generateShortCode(): void
