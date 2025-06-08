@@ -4,7 +4,7 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 $config = [
-    'id' => 'basic',
+    'id' => 'yii2-link-service',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
@@ -15,6 +15,7 @@ $config = [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'T95-g2Npougv5-8fF9ArwbQfb1fzbsCD',
+            'baseUrl' => '/yii2-link-service/web',
         ],
         'cache' => [
             'class' => 'yii\caching\FileCache',
@@ -42,14 +43,15 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
         'urlManager' => [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
+            'enableStrictParsing' => true,
             'rules' => [
+                '<code:[a-zA-Z0-9]{6,10}>' => 'click/index',
+                '/' => 'link/index',
             ],
         ],
-        */
     ],
     'params' => $params,
 ];
