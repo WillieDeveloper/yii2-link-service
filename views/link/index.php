@@ -35,10 +35,18 @@ $this->title = 'Get short link & QR';
                     <div class="col-md-6">
                         <h4>Ваша короткая ссылка:</h4>
                         <div class="input-group mb-3">
-                            <a href="<?= $success['shortUrl'] ?>" id="short_url" target="_blank"><?= $success['shortUrl'] ?></a>
-                            <button class="btn btn-outline-secondary" type="button" id="short_url-copy_btn">
-                                <i class="bi bi-clipboard"></i> Копировать
-                            </button>
+                            <?= Html::a($success['shortUrl'], $success['shortUrl'], [
+                                    'id' => 'short_url',
+                                    'class' => 'form-control',
+                                    'target' => '_blank',
+                                    'style' => 'overflow: hidden; text-overflow: ellipsis;'
+                                ]
+                            ) ?>
+                            <?= Html::button('Копировать', [
+                                    'id' => 'short_url-copy_btn',
+                                    'class' => 'btn btn-outline-secondary'
+                                ]
+                            ) ?>
                         </div>
                         <p class="small text-muted">Всего переходов: <?= $success['clicksCount'] ?></p>
                     </div>

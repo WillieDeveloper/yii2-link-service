@@ -30,22 +30,11 @@ class LinkController extends Controller
                 } else {
                     Yii::$app->session->setFlash('error', 'Ошибка при сохранении URL');
                 }
-            } else {
-                Yii::$app->session->setFlash('error', $this->getErrorMessages($model));
             }
         }
 
         return $this->render('index', [
             'model' => $model,
         ]);
-    }
-
-    protected function getErrorMessages($model): string
-    {
-        $errors = [];
-        foreach ($model->getErrors() as $messages) {
-            $errors[] = implode(' ', $messages);
-        }
-        return implode('<br>', $errors);
     }
 }

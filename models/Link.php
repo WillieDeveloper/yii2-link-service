@@ -32,13 +32,13 @@ class Link extends ActiveRecord
     public function rules(): array
     {
         return [
-            ['full_body', 'required'],
+            ['full_body', 'required', 'message' => 'URL не может быть пустым'],
             ['full_body', 'string', 'max' => 767],
             ['short_body', 'string', 'max' => 20],
             ['clicks_count', 'integer'],
             ['clicks_count', 'default', 'value'=> 0],
             [['full_body', 'short_body'], 'unique'],
-            [['full_body'], 'url', 'validSchemes' => ['http', 'https']],
+            [['full_body'], 'url', 'validSchemes' => ['http', 'https'], 'message' => 'Введите корректный URL'],
             ['full_body', UrlAvailabilityValidator::class],
         ];
     }
@@ -54,13 +54,14 @@ class Link extends ActiveRecord
 
     public function beforeSave($insert): bool
     {
-        if (parent::beforeSave($insert)) {
-            if ($insert) {
-                $this->generateShortCode();
-            }
-            return true;
+        if (!parent::beforeSave($insert)) {
+            return false;
         }
-        return false;
+        if ($insert) {
+            $this->generateShortCode();
+        }
+        return true;
+
     }
 
     public static function findByFullLink($url): ?Link
