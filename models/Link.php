@@ -79,16 +79,6 @@ class Link extends ActiveRecord
         return Yii::$app->urlManager->createAbsoluteUrl(['click/index', 'code' => $this->short_body]);
     }
 
-    public function getQrCode(int $size = 200): string
-    {
-        $qrCode = (new QrCode($this->getShortUrl()))
-            ->setSize($size)
-            ->setMargin(5)
-            ->setBackgroundColor(240, 240, 240);
-
-        return $qrCode->writeDataUri();
-    }
-
     /**
      * @throws Exception
      */

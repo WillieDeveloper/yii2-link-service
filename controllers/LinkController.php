@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\services\QrCodeService;
 use app\models\Link;
 use Yii;
 use yii\db\Exception;
@@ -24,7 +25,7 @@ class LinkController extends Controller
                 if ($model->save()) {
                     Yii::$app->session->setFlash('success', [
                         'shortUrl' => $model->getShortUrl(),
-                        'qrCode' => $model->getQrCode(),
+                        'qrCode' => QrCodeService::generateQrCode($model->getShortUrl()),
                         'clicksCount' => $model->getClicksCount(),
                     ]);
                 } else {
