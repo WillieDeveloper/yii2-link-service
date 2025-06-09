@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Link;
+use Yii;
 use yii\db\Exception;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -18,7 +19,7 @@ class ClickController extends Controller
     {
         $link = Link::findByShortLink($code);
         if ($link) {
-            $link->logClick();
+            $link->logClick(Yii::$app->request);
             return $this->redirect($link->full_body);
         }
 

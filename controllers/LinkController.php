@@ -21,16 +21,14 @@ class LinkController extends Controller
         if ($request->isPost && $model->load($request->post())) {
             $model = Link::findByFullLink($model->full_body) ?? $model;
 
-            if ($model->validate()) {
-                if ($model->save()) {
-                    Yii::$app->session->setFlash('success', [
-                        'shortUrl' => $model->getShortUrl(),
-                        'qrCode' => QrCodeService::generateQrCode($model->getShortUrl()),
-                        'clicksCount' => $model->getClicksCount(),
-                    ]);
-                } else {
-                    Yii::$app->session->setFlash('error', 'Ошибка при сохранении URL');
-                }
+            if ($model->save()) {
+                Yii::$app->session->setFlash('success', [
+                    'shortUrl' => $model->getShortUrl(),
+                    'qrCode' => QrCodeService::generateQrCode($model->getShortUrl()),
+                    'clicksCount' => $model->getClicksCount(),
+                ]);
+            } else {
+                Yii::$app->session->setFlash('error', 'Ошибка при сохранении URL');
             }
         }
 

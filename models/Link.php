@@ -2,44 +2,21 @@
 
 namespace app\models;
 
+use app\components\validators\UrlAvailabilityValidator;
+use app\models\AR\Link as ARLink;
 use Yii;
-use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveQuery;
-use yii\db\ActiveRecord;
 use yii\db\Exception;
 use yii\helpers\StringHelper;
-use app\components\validators\UrlAvailabilityValidator;
+use yii\web\Request;
 
-class Link extends ActiveRecord
+class Link extends ARLink
 {
     const SHORT_CODE_LENGTH = 10;
-
-    public static function tableName(): string
-    {
-        return '{{%links}}';
-    }
-
-    public function behaviors(): array
-    {
-        return [
-            [
-                'class' => TimestampBehavior::class,
-            ],
-        ];
-    }
-
     public function rules(): array
     {
-        return [
-            ['full_body', 'required', 'message' => 'URL не может быть пустым'],
-            ['full_body', 'string', 'max' => 767],
-            ['short_body', 'string', 'max' => 20],
-            ['clicks_count', 'integer'],
-            ['clicks_count', 'default', 'value'=> 0],
-            [['full_body', 'short_body'], 'unique'],
-            [['full_body'], 'url', 'validSchemes' => ['http', 'https'], 'message' => 'Введите корректный URL'],
-            ['full_body', UrlAvailabilityValidator::class],
-        ];
+        $rules = parent::rules();
+        $rules[] = ['full_body', UrlAvailabilityValidator::class];
+        return $rules;
     }
 
     public function generateShortCode(): void
@@ -63,16 +40,6 @@ class Link extends ActiveRecord
 
     }
 
-    public static function findByFullLink($url): ?Link
-    {
-        return static::findOne(['full_body' => $url]);
-    }
-
-    public static function findByShortLink(string $code): ?Link
-    {
-        return static::findOne(['short_body' => $code]);
-    }
-
     public function getShortUrl(): string
     {
         return Yii::$app->urlManager->createAbsoluteUrl(['click/index', 'code' => $this->short_body]);
@@ -81,21 +48,26 @@ class Link extends ActiveRecord
     /**
      * @throws Exception
      */
-    public function logClick(): void
+    public function logClick(Request $request): void
     {
         $click = new Click([
             'link_id' => $this->id,
-            'ip' => Yii::$app->request->userIP,
-            'user_agent' => Yii::$app->request->userAgent,
-            'referrer' => Yii::$app->request->referrer,
+            'ip' => $request->userIP,
+            'user_agent' => $request->userAgent,
+            'referrer' => $request->referrer,
         ]);
 
         $click->save();
     }
 
-    public function getClicks(): ActiveQuery
+    public static function findByFullLink($url): ?Link
     {
-        return $this->hasMany(Click::class, ['link_id' => 'id']);
+        return static::findOne(['full_body' => $url]);
+    }
+
+    public static function findByShortLink(string $code): ?Link
+    {
+        return static::findOne(['short_body' => $code]);
     }
 
     public function getClicksCount()

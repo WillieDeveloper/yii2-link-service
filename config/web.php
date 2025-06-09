@@ -4,7 +4,7 @@ $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
 $config = [
-    'id' => 'yii2-link-service',
+    'id' => 'yii2-link-service-web',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
