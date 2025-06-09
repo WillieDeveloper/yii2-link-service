@@ -6,9 +6,7 @@ use app\components\services\QrCodeService;
 use app\models\Link;
 use Yii;
 use yii\db\Exception;
-use yii\web\Controller;
-
-class LinkController extends Controller
+class LinkController extends BaseController
 {
     /**
      * @throws Exception

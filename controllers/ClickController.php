@@ -5,11 +5,10 @@ namespace app\controllers;
 use app\models\Link;
 use Yii;
 use yii\db\Exception;
-use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\web\Response;
 
-class ClickController extends Controller
+class ClickController extends BaseController
 {
     /**
      * @throws NotFoundHttpException
