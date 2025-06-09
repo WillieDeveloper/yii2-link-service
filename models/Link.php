@@ -2,7 +2,6 @@
 
 namespace app\models;
 
-use Da\QrCode\QrCode;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;

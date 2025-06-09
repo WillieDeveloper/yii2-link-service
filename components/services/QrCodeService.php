@@ -6,12 +6,17 @@ use Da\QrCode\QrCode;
 
 class QrCodeService
 {
-    public static function generateQrCode(string $url, int $size = 200): string
+    public const BACKGROUND_RED = 240;
+    public const BACKGROUND_GREEN = 240;
+    public const BACKGROUND_BLUE = 240;
+    public const MARGIN = 5;
+    private const SIZE = 200;
+    public static function generateQrCode(string $url, int $size = self::SIZE): string
     {
         $qrCode = (new QrCode($url))
             ->setSize($size)
-            ->setMargin(5)
-            ->setBackgroundColor(240, 240, 240);
+            ->setMargin(self::MARGIN)
+            ->setBackgroundColor(self::BACKGROUND_RED, self::BACKGROUND_GREEN, self::BACKGROUND_BLUE);
 
         return $qrCode->writeDataUri();
     }
