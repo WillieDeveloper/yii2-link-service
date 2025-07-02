@@ -1,6 +1,6 @@
 <?php
 
-namespace app\models\AR;
+namespace app\models\ActiveRecord;
 
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;

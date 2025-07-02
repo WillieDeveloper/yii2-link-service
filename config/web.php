@@ -1,5 +1,12 @@
 <?php
 
+use app\components\services\ClickService;
+use app\components\services\LinkService;
+use app\components\services\ModelServiceInterface;
+use app\controllers\ClickController;
+use app\controllers\LinkController;
+use yii\symfonymailer\Mailer;
+
 $params = require __DIR__ . '/params.php';
 $db = require __DIR__ . '/db.php';
 
@@ -21,7 +28,7 @@ $config = [
             'class' => 'yii\caching\FileCache',
         ],
         'mailer' => [
-            'class' => \yii\symfonymailer\Mailer::class,
+            'class' => Mailer::class,
             'viewPath' => '@app/mail',
             // send all mails to a file by default.
             'useFileTransport' => true,
@@ -44,6 +51,19 @@ $config = [
                 '<code:[a-zA-Z0-9]{6,10}>' => 'click/index',
                 '/' => 'link/index',
             ],
+        ],
+    ],
+    'container' => [
+        'definitions' => [
+            ModelServiceInterface::class => function ($container, $params, $config) {
+                if (Yii::$app->controller instanceof ClickController) {
+                    return new ClickService();
+                } elseif (Yii::$app->controller instanceof LinkController) {
+                    return new LinkService();
+                }
+
+                return new ClickService();
+            },
         ],
     ],
     'params' => $params,

@@ -2,9 +2,9 @@
 
 namespace app\models;
 
-use app\models\AR\Click as ARClick;
+use app\models\ActiveRecord\Click as ActiveRecordClick;
 
-class Click extends ARClick
+class Click extends ActiveRecordClick
 {
 
 }

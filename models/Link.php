@@ -2,16 +2,14 @@
 
 namespace app\models;
 
+use app\components\helpers\ShortLinkHelper;
 use app\components\validators\UrlAvailabilityValidator;
-use app\models\AR\Link as ARLink;
-use Yii;
+use app\models\ActiveRecord\Link as ActiveRecordLink;
 use yii\db\Exception;
-use yii\helpers\StringHelper;
 use yii\web\Request;
 
-class Link extends ARLink
+class Link extends ActiveRecordLink
 {
-    const SHORT_CODE_LENGTH = 10;
     public function rules(): array
     {
         $rules = parent::rules();
@@ -19,13 +17,9 @@ class Link extends ARLink
         return $rules;
     }
 
-    public function generateShortCode(): void
+    protected function saveShortLink(): void
     {
-        $this->short_body = StringHelper::truncate(
-            md5($this->full_body . microtime()),
-            self::SHORT_CODE_LENGTH,
-            ''
-        );
+        $this->short_body = ShortLinkHelper::generate($this->getFullLink());
     }
 
     public function beforeSave($insert): bool
@@ -34,30 +28,26 @@ class Link extends ARLink
             return false;
         }
         if ($insert) {
-            $this->generateShortCode();
+            $this->saveShortLink();
         }
         return true;
 
     }
 
-    public function getShortUrl(): string
-    {
-        return Yii::$app->urlManager->createAbsoluteUrl(['click/index', 'code' => $this->short_body]);
-    }
-
     /**
      * @throws Exception
      */
-    public function logClick(Request $request): void
+    public function createClick(Request $request): bool
     {
         $click = new Click([
-            'link_id' => $this->id,
             'ip' => $request->userIP,
             'user_agent' => $request->userAgent,
             'referrer' => $request->referrer,
         ]);
 
-        $click->save();
+        $click->link('link', $this);
+
+        return $click->save();
     }
 
     public static function findByFullLink($url): ?Link
@@ -73,5 +63,20 @@ class Link extends ARLink
     public function getClicksCount()
     {
         return $this->clicks_count;
+    }
+
+    public function getFullLink(): string
+    {
+        return $this->full_body;
+    }
+
+    public function getShortLink(): string
+    {
+        return $this->short_body;
+    }
+
+    public function getId(): int
+    {
+        return $this->id;
     }
 }

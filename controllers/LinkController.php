@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\components\helpers\UrlHelper;
 use app\components\services\QrCodeService;
 use app\models\Link;
 use Yii;
@@ -17,16 +18,16 @@ class LinkController extends BaseController
         $request = Yii::$app->getRequest();
 
         if ($request->isPost && $model->load($request->post())) {
-            $model = Link::findByFullLink($model->full_body) ?? $model;
+            $model = Link::findByFullLink($model->getFullLink()) ?? $model;
 
             if ($model->save()) {
                 Yii::$app->session->setFlash('success', [
-                    'shortUrl' => $model->getShortUrl(),
-                    'qrCode' => QrCodeService::generateQrCode($model->getShortUrl()),
+                    'shortUrl' => UrlHelper::getShortUrl($model->getShortLink()),
+                    'qrCode' => QrCodeService::generateQrCode(UrlHelper::getShortUrl($model->getShortLink())),
                     'clicksCount' => $model->getClicksCount(),
                 ]);
             } else {
-                Yii::$app->session->setFlash('error', 'Ошибка при сохранении URL');
+                Yii::$app->session->setFlash('error', Yii::t('app', 'Ошибка при сохранении URL'));
             }
         }
 
