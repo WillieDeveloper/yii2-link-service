@@ -10,12 +10,15 @@ abstract class BaseController extends Controller
 {
     protected ModelServiceInterface $service;
 
-    public function __construct($id, $module, ModelServiceInterface $service, $config = [])
+    public function __construct($id, $module, $config = [])
     {
-        $this->service = $service;
+        $serviceClass = $this->getServiceClass();
+        $this->service = new $serviceClass();
 
         parent::__construct($id, $module, $config);
     }
+
+    abstract protected function getServiceClass(): string;
 
     public function behaviors(): array
     {

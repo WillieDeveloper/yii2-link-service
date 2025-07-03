@@ -8,8 +8,13 @@ use yii\web\Request;
 class LinkService implements ModelServiceInterface
 {
 
-    public function process(Request $request, ActiveRecordInterface $model): bool
+    public function process(Request $request, array $params = []): bool
     {
-        return true;
+        return !empty($params);
+    }
+
+    public function getRedirectLink(): string
+    {
+        return '';
     }
 }

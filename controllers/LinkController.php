@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\components\helpers\UrlHelper;
+use app\components\services\LinkService;
 use app\components\services\QrCodeService;
 use app\models\Link;
 use Yii;
@@ -34,5 +35,10 @@ class LinkController extends BaseController
         return $this->render('index', [
             'model' => $model,
         ]);
+    }
+
+    protected function getServiceClass(): string
+    {
+        return LinkService::class;
     }
 }

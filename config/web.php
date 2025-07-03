@@ -53,19 +53,6 @@ $config = [
             ],
         ],
     ],
-    'container' => [
-        'definitions' => [
-            ModelServiceInterface::class => function ($container, $params, $config) {
-                if (Yii::$app->controller instanceof ClickController) {
-                    return new ClickService();
-                } elseif (Yii::$app->controller instanceof LinkController) {
-                    return new LinkService();
-                }
-
-                return new ClickService();
-            },
-        ],
-    ],
     'params' => $params,
 ];
 

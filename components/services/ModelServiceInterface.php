@@ -7,5 +7,7 @@ use yii\web\Request;
 
 interface ModelServiceInterface
 {
-    public function process(Request $request, ActiveRecordInterface $model): bool;
+    public function process(Request $request, array $params = []): bool;
+
+    public function getRedirectLink(): string;
 }

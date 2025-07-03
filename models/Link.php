@@ -5,8 +5,6 @@ namespace app\models;
 use app\components\helpers\ShortLinkHelper;
 use app\components\validators\UrlAvailabilityValidator;
 use app\models\ActiveRecord\Link as ActiveRecordLink;
-use yii\db\Exception;
-use yii\web\Request;
 
 class Link extends ActiveRecordLink
 {
@@ -34,22 +32,6 @@ class Link extends ActiveRecordLink
 
     }
 
-    /**
-     * @throws Exception
-     */
-    public function createClick(Request $request): bool
-    {
-        $click = new Click([
-            'ip' => $request->userIP,
-            'user_agent' => $request->userAgent,
-            'referrer' => $request->referrer,
-        ]);
-
-        $click->link('link', $this);
-
-        return $click->save();
-    }
-
     public static function findByFullLink($url): ?Link
     {
         return static::findOne(['full_body' => $url]);
@@ -60,7 +42,7 @@ class Link extends ActiveRecordLink
         return static::findOne(['short_body' => $code]);
     }
 
-    public function getClicksCount()
+    public function getClicksCount(): int
     {
         return $this->clicks_count;
     }
