@@ -18,7 +18,7 @@ class ClickController extends BaseController
             throw new ServerErrorHttpException('Ошибка сохранения клика');
         }
 
-        return $this->redirect($this->service->getRedirectLink());
+        return $this->redirect($this->service->getData()['redirectLink']);
     }
 
     protected function getServiceClass(): string

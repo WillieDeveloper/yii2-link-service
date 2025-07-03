@@ -2,7 +2,7 @@
 
 use app\components\services\ClickService;
 use app\components\services\LinkService;
-use app\components\services\ModelServiceInterface;
+use app\components\services\ProcessServiceInterface;
 use app\controllers\ClickController;
 use app\controllers\LinkController;
 use yii\symfonymailer\Mailer;

@@ -2,19 +2,36 @@
 
 namespace app\components\services;
 
-use yii\db\ActiveRecordInterface;
+use app\components\helpers\UrlHelper;
+use app\models\Link;
+use yii\db\Exception;
 use yii\web\Request;
 
-class LinkService implements ModelServiceInterface
+class LinkService extends BaseService
 {
-
+    /**
+     * @throws Exception
+     */
     public function process(Request $request, array $params = []): bool
     {
-        return !empty($params);
+        $model = new Link();
+        if ($model->load($request->post())) {
+            $this->model = Link::findByFullLink($model->getFullLink()) ?? $this->model;
+        }
+        return $this->model->save();
     }
 
-    public function getRedirectLink(): string
+    public function getData(): array
     {
-        return '';
+        return [
+            'shortUrl' => UrlHelper::getShortUrl($this->model->getShortLink()),
+            'qrCode' => QrCodeService::generateQrCode(UrlHelper::getShortUrl($this->model->getShortLink())),
+            'clicksCount' => $this->model->getClicksCount(),
+        ];
+    }
+
+    protected function getModelClass(): string
+    {
+        return Link::class;
     }
 }

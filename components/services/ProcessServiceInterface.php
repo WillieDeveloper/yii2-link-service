@@ -2,12 +2,9 @@
 
 namespace app\components\services;
 
-use yii\db\ActiveRecordInterface;
 use yii\web\Request;
 
-interface ModelServiceInterface
+interface ProcessServiceInterface
 {
     public function process(Request $request, array $params = []): bool;
-
-    public function getRedirectLink(): string;
 }

@@ -8,17 +8,16 @@ use yii\db\Exception;
 use yii\web\NotFoundHttpException;
 use yii\web\Request;
 
-class ClickService implements ModelServiceInterface
+class ClickService extends BaseService
 {
-    private ?Link $linkModel;
     /**
      * @throws Exception
      * @throws NotFoundHttpException
      */
     public function process(Request $request, array $params = []): bool
     {
-        $this->linkModel = $this->findByCode($params['code']);
-        if ($this->linkModel === null) {
+        $this->model = $this->findByCode($params['code']);
+        if ($this->model === null) {
             throw new NotFoundHttpException('URL не найден');
         }
         $click = new Click([
@@ -26,7 +25,7 @@ class ClickService implements ModelServiceInterface
             'user_agent' => $request->userAgent,
             'referrer' => $request->referrer,
         ]);
-        $click->link('link', $this->linkModel);
+        $click->link('link', $this->model);
         return $click->save();
     }
 
@@ -35,8 +34,13 @@ class ClickService implements ModelServiceInterface
         return Link::findByShortLink($code);
     }
 
-    public function getRedirectLink(): string
+    public function getData(): array
     {
-        return $this->linkModel->getFullLink();
+        return ['redirectLink' => $this->model->getFullLink()];
+    }
+
+    protected function getModelClass(): string
+    {
+        return Link::class;
     }
 }

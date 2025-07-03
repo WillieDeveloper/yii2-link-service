@@ -2,13 +2,13 @@
 
 namespace app\controllers;
 
-use app\components\services\ModelServiceInterface;
+use app\components\services\ProcessServiceInterface;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 
 abstract class BaseController extends Controller
 {
-    protected ModelServiceInterface $service;
+    protected ProcessServiceInterface $service;
 
     public function __construct($id, $module, $config = [])
     {
